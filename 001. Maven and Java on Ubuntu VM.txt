@@ -1,0 +1,63 @@
+Installation and Configuration of Maven and Java on Ubuntu EC2 instance
+======================================================================================================
+Step1:
+**********
+Update the packages
+
+sudo apt update -y
+sudo apt upgrade -y
+
+Step2:
+**********
+Install Java
+Install OpenJDK 11 (or another version if you prefer):
+
+sudo apt install openjdk-11-jdk -y
+
+Verify the installation:
+
+java -version
+
+Step3:
+**********
+Install Maven
+Install Maven using the default package manager:
+
+sudo apt install maven -y
+Verify the installation:
+
+mvn -version
+
+Step4:
+**********
+Configure Environment Variables
+Open the environment profile file:
+
+sudo nano /etc/profile.d/maven.sh
+Add the following lines to configure JAVA_HOME, MAVEN_HOME, and update the PATH:
+
+export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
+export MAVEN_HOME=/usr/share/maven
+export PATH=$PATH:$JAVA_HOME/bin:$MAVEN_HOME/bin
+
+Save and close the file
+
+Step5:
+*********
+Apply the Environment Variables
+Load the new environment variables into the current session:
+
+source /etc/profile.d/maven.sh
+
+Step6:
+*********
+Verify the Installation
+Verify the Java installation:
+
+echo $JAVA_HOME
+java -version
+
+Verify the Maven installation:
+
+echo $MAVEN_HOME
+mvn -version

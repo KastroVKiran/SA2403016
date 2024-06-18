@@ -1,0 +1,60 @@
+Installation and Configuration of Maven and Java on Amazon Linux EC2 instance
+======================================================================================================
+Step1:
+**********
+Update the packages
+
+sudo yum update -y
+
+Step2:
+**********
+Install Java
+
+sudo amazon-linux-extras install java-openjdk11 -y
+
+java -version
+
+Step3:
+**********
+Install Maven
+Download and extract Maven
+
+cd /opt
+sudo wget https://downloads.apache.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.tar.gz
+sudo tar -xzvf apache-maven-3.8.4-bin.tar.gz
+sudo mv apache-maven-3.8.4 /opt/maven
+
+
+Step4:
+**********
+Configure Environment Variables
+Open the environment profile file:
+
+sudo nano /etc/profile.d/maven.sh
+
+Add the following lines to configure JAVA_HOME, MAVEN_HOME, and update the PATH:
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+export MAVEN_HOME=/opt/maven
+export PATH=$PATH:$JAVA_HOME/bin:$MAVEN_HOME/bin
+
+Save and close the file
+
+Step5:
+**********
+Apply the Environment Variables
+Load the new environment variables into the current session:
+
+source /etc/profile.d/maven.sh
+
+Step6
+**********
+Verify the Installation
+Verify the Java installation:
+
+echo $JAVA_HOME
+java -version
+
+Verify the Maven installation:
+
+echo $MAVEN_HOME
+mvn -version
