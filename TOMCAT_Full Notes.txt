@@ -1,0 +1,78 @@
+TOMCAT
+------------------
+Types of application deployments
+----------------------------------------------
+1. Manual deployment 		----> We have to manually upload the jar or war file into the tomcat webserver ---- Least preferred
+2. Automated deployment	-----> JENKINS ----- Most commonly preferred
+
+=> Inorder to do the manual deployment we will use EC2 Instance (Server)
+=> Inside the VM, we will install the tomcat webserver
+=> The webserver which is used to do the deployments is known as tomcat webserver
+=> Source Code ----> Maven Goals (Package) ----> war file ----> Deploy = Deployment Process
+=> Commonly used webservers: Apache Tomcat, JBoss, WebLogic, WebSphere....
+
+=> Tomcat is managed by Apache Organization. Tomcat is name of the server.
+=> Tomcat is an open-source s/w and it is available for FREE
+=> Tomcat server will run on port number 8080
+
+How to download the tomcat server into the local system
+------------------------------------------------------------------------------
+https://tomcat.apache.org/download-90.cgi
+
+Tomcat Folder Structure
+------------------------------
+1. BIN (Binaries)
+=> It contains the files that are required to start and stop the tomcat server.
+=> Linux OS ----> startup.sh (used to start the tomcat server), shutdown.sh (used to stop the tomcat server)
+=> Windows OS ----> startup.bat (used to start the tomcat server), shutdown.bat (used to stop the tomcat server)
+
+2. CONF (Configuration)
+=> It container the configuration related files
+=> server.xml ----> Is used to configure the tomcat port number
+=> tomcat-users.xml ----> Is used to configure the tomcat users
+
+3. LIB (Library)
+=> It contains the libraries i.e jar files
+
+4. LOGS 
+=> It contains the server logs i.e execution details
+
+5. TEMP (Temporary)
+=> It contains the temporary data
+
+6. WEBAPPS 
+=> In this folder will keep the application war files.
+=> Also known as Deployment folder.
+=> We can keep the multiple war files in the webapps folder, but it is not recommended.
+
+Note: To work with tomcat, we have to install java s/w also
+
+Deployment Process
+----------------------------
+Step 1: Launch an Amazon Linux EC2 Instance
+Step 2: Installation of tomcat webserver
+Step 3: Deploy the war file
+
+Installation of tomcat server in Linux VM
+-------------------------------------------------
+
+Installation of java s/w
+-------------------------------
+
+Starting the tomcat server
+-----------------------------------
+
+
+Configurations for tomcat
+----------------------------------
+context.xml ---> WebApps/Manager/META-INF
+tomcat-users.xml ---> conf
+
+<role rolename="manager-gui" /> 
+<user username="tomcat" password="tomcat" roles="manager-gui" /> 
+<role rolename="admin-gui" />   
+<user username="admin" password="admin" roles="manager-gui,admin-gui"/> 
+
+
+
+
