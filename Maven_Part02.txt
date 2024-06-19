@@ -1,0 +1,74 @@
+------------------------------------------------------------------------------------
+How to create initial project folder structure for standalone application
+------------------------------------------------------------------------------------
+D Drive ---> Create a folder (01-Standalone-App) ---> Open Command Prompt in the created folder path ---> Execute the below command
+
+mvn archetype:generate -DgroupId=in.StarAgile -DartifactId=01-Maven-App-StarAgile -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+
+=> Once the project folder structure is created, we will see two things
+1. SRC Folder
+1.1. Main Folder - java\in\StarAgile\App.java ---> In ".java" file app source code will be written.
+1.2. Test Folder - java\in\StarAgile\AppTest.java ---> In "AppTest.java" file, code testing (J-Unit Test) related info.
+
+2. pom.xml File
+Without pom.xml file maven will not work. Whatever work we are going to do in maven, everything will be communicated using pom.xml file only.
+Note: Whenever we are executing maven goals we should execute all the maven goals in the pom.xml file path only.
+
+------------------------------------------------------------------------------------
+How to add dependencies in the pom.xml file
+------------------------------------------------------------------------------------
+https://mvnrepository.com/ ---> Search for required dependency (Spring) ----> Copy the syntax and paste in the pom.xml file. ----> Save the file and exit.
+
+Maven will download the dependencies added in the pom.xml.
+
+---------------------------------------------------------------------------------
+How maven will download these dependencies in the backend?
+---------------------------------------------------------------------------------
+MAVEN REPOSITORIES
+=> Maven will download any dependency using a concept called repository.
+=> In Maven, we have 3 types of repositories:
+1. Central Repo. - Apache Organisation
+2. Remote Repo. - Individual company (Nexus, JFROG)
+3. Local Repo. - Our PC (.m2 folder)
+
+
+***************************
+MAVEN GOALS
+***************************
+=> In order to package the code as a jar or war file, we need to understand maven goals.
+
+=> Goals are nothing but commands.
+
+=> All maven goals should be executed whereever the pom.xml file is available.
+
+=> Maven goals are used to perform project build activities (conversion of .java files into .class files ---> Package the .class files)
+
+=> The commonly available maven goals are
+1) Clean - If you want to delete the old .java files and create a new .java files, then we will use Clean goal. If 'Target' folder is available, clean goal will delete the target folder
+Syntax: mvn clean
+
+2) Compile - To compile the project.
+Syntax: mvn compile
+
+3) Test - This goal is used to excute unit test code of our application.
+Syntax: mvn test
+
+4) Package - This goal is used to package the project as a jar or war file.
+Syntax: mvn package
+
+5) Install - This goal is used to install our project as a dependency in the local repository.
+Syntax: mvn install
+
+=> Multiple maven goals can be executed at a time.
+Ex: mvn clean compile test, mvn clean package
+
+=> To execute maven goals, open the command prompt whereever the pom.xml file is available.
+100 .java files --- Build
+101 .java files ---- Delete the old build and then create the new build
+
+============================================
+How to create web application using Maven:
+============================================
+mvn archetype:generate -DarchetypeArtifactId=maven-archetype-webapp -DgroupId=in.<CompanyName> -DartifactId=<ProjectName> -DinteractiveMode=false
+
+mvn archetype:generate -DarchetypeArtifactId=maven-archetype-webapp -DgroupId=in.StarAgile -DartifactId=02-Maven-WebApp-StarAgile -DinteractiveMode=false
