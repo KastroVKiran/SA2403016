@@ -1,0 +1,38 @@
+How to Deploy JAR Files into the Tomcat Web Browser?
+==============================================
+
+Method 1:
+****************
+To upload JAR files in the Tomcat admin dashboard, follow these steps:
+
+Access the Tomcat Admin Dashboard:
+
+Open a web browser and go to the URL where your Tomcat server is running, usually http://localhost:8080.
+
+Click on the "Manager App" link.
+
+Enter the username and password for the Tomcat Manager. These credentials are defined in the tomcat-users.xml file located in the conf directory of your Tomcat installation.
+
+Deploy a JAR File:
+------------------------------
+In the Tomcat Manager application, scroll down to the "Deploy" section.
+
+Under the "WAR file to deploy" section, you can upload a WAR file directly.
+
+To deploy a JAR file, you need to manually place it in the appropriate directory since the Tomcat Manager does not support direct JAR uploads.
+
+Manually Place the JAR File:
+------------------------------------
+Locate the WEB-INF/lib directory of your web application in the webapps directory of your Tomcat installation. For example, if your web application is named myapp, the directory path would be webapps/myapp/WEB-INF/lib.
+
+Copy your JAR file to this directory. You can do this using a file transfer tool, or directly from the command line or file explorer, depending on your server setup.
+
+Restart Tomcat (if needed):
+-------------------------------------
+If the JAR file contains new or updated classes that need to be loaded, you might need to restart Tomcat for the changes to take effect. This can be done from the Tomcat Manager under the "Manage Applications" section by stopping and then starting the application, or by restarting the entire Tomcat server.
+
+Method 2:
+****************
+Here's a quick summary of the command line step to copy the JAR file if you are working directly on the server:
+
+cp <JarFilePath> /path/to/tomcat/webapps/yourapp/WEB-INF/lib/
