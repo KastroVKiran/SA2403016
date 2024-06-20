@@ -1,0 +1,160 @@
+													JENKINS_Day 01
+____________________________________________________________________________________________________________________
+=> CI & CD
+
+CI - Continuous Integration
+
+CD - Continuous Delivery
+
+CD - Continuous Deployment
+
+CI ----> Continuous Integration
+Netflix ----> 2020 - Jan (V1), 2020 - August (V2), 2021 - August (V3), 2022 - January (V4), 2024 - June (V5)
+		     GitHub, GitHub, GitHub, GitHub
+			V1 (Oldest), V2, V3, V4, V5 (Current) 	
+Building the code whenever there is a requirement of code changes
+
+CT ----> Continuous Testing
+Whenever there are updates in the code, immediately the testing team should test the code
+
+
+Continuous Delivery ---->
+Deploying the code manually to the production environment
+
+Continuous Deployment ----->
+V1 (day 1), V2 (day 2), V3 (day 10).......monthly basis
+
+Whenever developers makes the changes in the github repo, automatically the code has to get deployed into the webservers/VMs.
+
+To do automation process of code deployment into the servers, we will use JENKINS
+
+JENKINS is an automation tool.
+
+Jenkins is also known as CI & CD tool
+
+JENKINS
+------------------
+=> Jenkins is basically a CI & CD tool
+=> It is a free and open source s/w
+=> Jenkins was invented by Kosukha Kawaguchi in 2004. As a part of Sun Micro Systems
+=> Jenkins was developed by using Java programming language
+=> Jenkins was a part of Hudson Project
+=> Later, oracle has owned the Hudson project and they named as Jenkins
+=> Jenkins will run on Port Number 8080
+
+Build and Deployment Process
+--------------------------------------
+1. Developers will write the source code
+2. Testing team will test the code
+3. Developers will push the code to GitHub repo
+
+1. Take the code from repo.
+2. Compile the code
+3. Package the source code
+4. Deploy the war file into the servers
+
+Developers ----> Source code ----> Testing of source code ----> Keep the code in repo ----> Take the code from repo ----> Setup the cloud based infrastructure ----> Compile and package the code ----> deploy the code
+
+
+Installation of Jenkins on Linux based EC2 Instance:
+----------------------------------------------------------------
+***********
+   Part 1
+***********
+1. Launch and Connect to the Instance using MobaXTerm
+2. Become Root User
+	sudo su
+	cd (You will see only IP of Instance)
+	sudo yum update -y		
+
+
+***********
+   Part 2
+***********
+https://www.jenkins.io/doc/tutorials/tutorial-for-installing-jenkins-on-AWS/
+
+3. Add Jenkins repo. to our YUM repo:
+	sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+4. Import a key-file from Jenkins-CI to enable the installation from package:
+	sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+	
+	sudo yum upgrade
+
+***********
+    Part 3
+***********
+5. Installing Java
+	sudo amazon-linux-extras install java-openjdk11 -y
+
+	java -version
+
+6. Install Jenkins:
+	sudo yum install jenkins -y
+
+7. Lets start, enable, and check the status of Jenkins 
+	sudo systemctl enable jenkins	
+	sudo systemctl start jenkins
+	sudo systemctl status jenkins
+	You should see Active & Running in Green Colour, which means the Jenkins Service is successfully installed.
+
+Note: 
+To remove jenkins: sudo yum remove jenkins
+
+***********
+   Part 4
+***********
+By default, the Jenkins tool will run on Port No. 8080
+Enable Port No. 8080 for the EC2 Instance inorder to access Jenkins Tool.
+Check Instance ----> Security ----> Click on link below the Security Group ----> Add Rule ----> Custom TCP, Port No. 8080 ----> Save Rules.
+
+Access Jenkins:
+
+	<public ip>:8080
+	cat <Paste the red code visible while accessing jenkins in browser> and execute in MobaXTerm
+		cat /var/lib/jenkins/secrets/initialAdminPassword
+	Copy the code visible in MobaXTerm and Paste in Notepad
+		8f39e64834e34e3ba2e6b0ef55695ea0
+			Paste the above code in Jenkins Browser under "Administrative Password"
+	Click on "Install Suggested Plugins"
+	Create First Admin User
+		Provide Username, Password, Full Name, and Email
+	Save and Continue
+	Copy the Jenkins URL and Paste in Notepad
+		http://3.135.249.138:8080/
+	Save and Finish
+	Start Using Jenkins
+		You will see Jenkins Console
+
+From now, we are going to create the JENKINS Jobs
+
+What is a Jenkins job?
+------------------------------
+=> Jenkins job is also known as (automated) task - CI & CDeployment
+=> Types of jobs in Jenkins;
+	1. Freestyle projects ----> to create jobs in Jenkins, we will use the Jenkins console
+	2. Pipelines ----> to create jobs in Jenkins, we will use scripts (code)
+
+Working with freestyle projects
+----------------------------------------
+
+CRON Expression
+------------------------
+Build Triggers - Build Periodically
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
