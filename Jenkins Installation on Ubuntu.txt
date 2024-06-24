@@ -1,0 +1,46 @@
+===============================
+Jenkins Installation on Ubuntu Instance
+===============================
+
+1) Create Ubuntu VM (t2.micro type)
+
+2) Connect to your EC2 instance using MobaXterm
+ 
+3) Install Java using below commands
+
+$ sudo apt-get update
+
+$ sudo apt-get install default-jre
+
+4) Install Jenkins with below commands
+
+$ curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+
+$ echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+$ sudo apt-get update
+
+$ sudo apt-get install jenkins
+
+$ sudo systemctl status jenkins
+ 
+5) Access Jenkins Server in browser using below URL
+
+		URL : http://ec2-public-ip:8080/
+
+	Note: Enable 8080 port in security group
+ 
+6) Get the initial administrative password 
+
+	$ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+	pwd : 9ddd6bc7174c492a92f53fccaab54b05
+
+-> Provide password which we have copied to unlock jenkins
+
+-> Select "Install Suggested Plugins" card (it will install those plugins)
+
+-> Create Admin account
