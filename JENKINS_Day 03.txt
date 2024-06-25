@@ -1,0 +1,153 @@
+Day 03_JENKINS 
+--------------------------------------------------------------------------------
+Pending topics
+----------------------
+1. Pipelines, Project 3***
+2. Master and Slave Architecture***
+3. User Management in Jenkins (RBAC)**
+4. Throttle Builds*
+5. Remotely Build Trigger**
+6. Upstream and Downstream jobs**
+----------------------------------------------------------
+1. Pipelines
+-----------------------
+=> In Jenkins we can create 2 types of jobs;
+	1. Freestyle projects ----> These projects are created based on Jenkins user interface (6 steps)
+	2. Pipelines		 ----> These projects are created based on the script/code (1 step - Pipelines)
+
+=> Types of pipeline script;
+	1. Declarative script** (commonly preferred in the real-time scenarios) - Doesnt need the knowledge on programming
+	2. Scripted/Groovy Scripted - Need knowledge on programming
+
+How to write the declarative script?
+--------------------------------------------
+P	---> pipeline
+A	---> agent
+S	---> Stage(s)
+S	---> Step(s)
+
+
+Goto office (by 10.00AM)
+Wakeup ---> Freshup ---> Breakfast ---> Vehicle ---> Office
+Wakeup: Turnoff the alarm, -----
+Freshup: Washroom, Paste and brush, -----
+
+Deploy the app
+Code in GitHub ----> Package ----> Deploy the code ----> End users should access the application
+Code in GitHub: Install git, Clone the code
+Package: configure maven, execute maven goals, check for war file
+
+=> In a single Jenkins pipeline script, we can write multiple stages.
+=> In each stage, we can write multiple steps.
+
+Declarative script:
+---------------------------
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                // Add your build steps here, e.g., sh 'mvn clean install'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                // Add your test steps here, e.g., sh 'mvn test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                // Add your deploy steps here, e.g., sh 'scp target/*.war user@server:/path/to/deploy'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully.'
+        }
+        failure {
+            echo 'Pipeline failed.'
+        }
+    }
+}
+
+------------------
+
+node {
+    try {
+        stage('Build') {
+            echo 'Building...'
+            // Add your build steps here, e.g., sh 'mvn clean install'
+        }
+
+        stage('Test') {
+            echo 'Testing...'
+            // Add your test steps here, e.g., sh 'mvn test'
+        }
+
+        stage('Deploy') {
+            echo 'Deploying...'
+            // Add your deploy steps here, e.g., sh 'scp target/*.war user@server:/path/to/deploy'
+        }
+    } catch (Exception e) {
+        currentBuild.result = 'FAILURE'
+        echo 'Pipeline failed: ' + e.message
+    } finally {
+        if (currentBuild.result == 'FAILURE') {
+            echo 'Sending failure notification...'
+            // Add your notification steps here, e.g., mail to: 'team@example.com', subject: 'Build failed', body: '...'
+        } else {
+            echo 'Pipeline completed successfully.'
+        }
+    }
+}
+-----------
+Repo URL: https://github.com/KastroVKiran/Netflix-Pipeline-Project.git
+
+Stage 1: Cloning the code
+Stage 2: Packaging the code
+Stage 3: Deploying the code
+
+Note: In real-time, the pipeline script will be available in the GitHub repo. The name of the file in which the pipeline script is available is known as "Jenkinsfile"
+
+-------------------------------
+Trigger Builds Remotely
+-------------------------------
+Team Lead ----> Jenkins Admin ----> Team is working for the project ----> Ready to be built ----> An admin you haven't given any permissions to the team members to build the job. Also, you are not available.
+
+But admin doesn't have the access to Jenkins console. How to build the job in this situations?
+ 
+
+Trigger Builds Remotely ----> URL ---> 
+
+Create a simple job with Build Trigger as "Build Trigger Remotely"
+
+http://65.0.95.235:8080/job/trigger%20job/build?token=kastro-kiran
+
+Once after hitting the above url, Jenkins will ask to enter the username and password. Since it is not recommended to provide the Jenkins admin creds, we have to install a plugin known as "Build Autherization Token Root"
+
+Dashboard ---> Manage Jenkins ---> Plugins ---> Available plugins ---> Select and install "Build Authentication Token Root"
+
+Hit the above url, so that the job will get built. And it will NOT ASK JENKINS ADMIN CREDS
+
+
+Before hitting the url, make sure to build the job atleast once in the Jenkins dashboard by clicking on "BuildNow"
+
+Once after the first build gets executed, then hit the above url
+
+
+
+
+
+
+
+
+
+
+
+
