@@ -193,7 +193,7 @@ Note: To do any edits to the job, click on "Configure" and edit accordingly
 	Click on the application name (it should display application)
 
 For ex, assume that i have modified the code in github repo; does the changes gets reflected in our app? Lets see
-Goto repo https://github.com/ashokitschool/maven-web-app.git ---> src/main/webapp/index.jsp ---> Change the code accordingly ---> Commit changes ---> Goto Tomcat browser and reload ---> You dont see any changes.
+Goto repo ---> src/main/webapp/index.jsp ---> Change the code accordingly ---> Commit changes ---> Goto Tomcat browser and reload ---> You dont see any changes.
 
 So what we need to do is; we need to rebuild the job ---> Goto Jenkins UI ---> Build Now ---> Goto Tomcat Browser ---> Refresh the page ---> You will see the changes.
 
