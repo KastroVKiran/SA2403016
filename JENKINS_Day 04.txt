@@ -1,0 +1,246 @@
+												JENKINS_Day 04
+____________________________________________________________________________________________________________________
+
+1. Master and Slave Architecture
+2. User Management in Jenkins
+3. Throttle Builds
+4. Upstream and Downstream jobs
+5. WebHooks
+6. Trigger Builds Remotely
+
+-----------------------------------------------------
+1. Master and Slave Architecture
+-----------------------------------------------------
+1 VM (t2.micro, 8 GB) ----> Jenkins ----> Create the job 1 ----> Build the job ----> Success (10 seconds) --10 MB
+						----> Create the job 2 ----> Build the job ----> Success (20 seconds) -- 30 MB
+						----> Create the job 3 ----> Build the job ----> Success (30 seconds)
+						----> Create the job 4 ----> Build the job ----> Success (60 seconds)
+						----> Create the job 20 ----> Build the job ----> Success (1 hour)   --- 500 MB
+
+=> When we are creating multiple jobs on a single VM, the instance will face the downtime. the reason for downtime of the VM is, the storage capacity is reaching its threshold limits.
+
+7.5GB (jobs)
+300 MB (Jenkins)
+200 MB (Java)
+Plugins, Maven, Git.....
+
+=> How to solve the above problem. 
+	Solution: Master and Slave Nodes
+
+=> Master Node ----> Jenkins is installed, Install plugins, java, git, maven, Create the jobs
+=> Slave Nodes ----> Build the jobs
+
+=> We shouldn't have multiple master nodes. Master Node should be ONE
+=> We can have multiple slave nodes, based on the scale of the project
+
+=> Only after configuring the master node with slave node, we can successfully build the jobs on the slave node
+
+=> Master Node: Jenkins, Tomcat, Java, GIT, Maven
+=> Slave Node: Java, Maven, GIT
+
+Note: The version of the softwares on Master Node and Slave Node should be same
+
+Master Node ---> t2.medium, 25 GB (VM1)
+Slave Node ---> t2.micro, 10 GB (VM2)
+
+Team Lead ---> Work assigned
+Team Member ---> Complete task
+
+----------------------------------------------
+JENKINS MASTER and SLAVE
+----------------------------------------------
+Connect to jenkins master node.
+
+Launch two instances (slave 1 and slave 2)
+
+Connect to slave 1 in Moba
+$ sudo amazon-linux-extras install java-openjdk11 -y
+
+Setup the slave server
+--------------------------------
+Jenkins Console ----> Manage jenkins ----> Nodes ----> New node ----> Name: Slave1, "Check" permanent agent ----> Create.
+
+No. of executors: 3 (3 builds will execute parallelly) ----> Remote root directory: /tmp (It is a place where we want to store the build output. I want to store my output of my jenkins in 'tmp' folder) ----> Labels: slave1 ----> Usage: "Only build jobs with label expressions matching this node" (It means, if i give slave1 i.e label name:, then only it will build the job) ----> Launch method: Launch agents via SSH, Host: Private IP of slave1 VM, Credentials: Click on Add ----> Select 'Jenkins' ----> Domain Name: Global credentials, Kind: SSH Username with private key, Username: ec2-user, Private key: "Check" enter directly ----> Add: Paste the content in pem file that is used to launch the slave node ---> Add ----> Credentials: Select 'ec2-user'  ----> Host key verification strategy: non verifying verification strategy ----> Save. (Here we will give username and password for the server)
+
+You can see the SLAVE 1
+
+Create a job with git repo ----> Build steps: Invoke top level maven targets ----> Goals: clean package ----> Save ----> Apply
+
+Click on Build Now ----> By default when we click on build now, the build gets saved on master node. To verify this, Click on build number ----> Console output ----> You can see "Building on the built-in node." Here 'built-in node' means master node.
+
+The purpose of master and slave concept is, I want to build the jobs on worker/slave node, so that the load on master node will be reduced.
+
+Connect to Worker Node 1 in Moba ----> cd /tmp/ ----> ls ----> You dont see the output
+Connect to Master Node in Moba ----> cd /tmp/ ----> ls ----> You will see the output as 'workspace'
+
+Lets see how to add slave-1, on which we need to do the builds
+----------------------------------------------------------------------------
+Goto the Job ----> Configure ----> General ----> "Check" Restrict where this project can be run  ----> Label expression: slave1 ----> Apply ----> Save.
+Click on Build now.
+
+But you will see the build failure.
+This failure is because, we didnot install maven and git on slave1.
+
+Connect to slave1 ----> (You are currently pointing to 'tmp' folder) ----> sudo yum install git java-1.8.0-openjdk maven -y
+
+Goto the Job ----> Click on Build Now ----> Click on build number ----> Console output ----> You can see "Building remotely on Slave1" and the path where the build got stored.
+
+Goto the slave1 connected tab in Moba ----> cd tmp ----> ls ----> You will see "workspace" directory ----> cd workspace ----> ls ----> You will see the job name ----> cd <job-name> ----> ls ----> cd target ----> You will see the "war" file.
+
+This is how we can reduce the load on master, by building the jobs on worker nodes.
+
+-----------------------------------------------------------
+Setup Slave2, following the above process.
+-----------------------------------------------------------
+Jenkins Console ----> Manage jenkins ----> Nodes ----> New node ----> Name: Slave1, "Check" permanent agent ----> Create.
+No. of executors: 3 (3 builds will execute parallely) ----> Remote root directory: /tmp (It is a place where we want to store the build output. I want to store my output of my jenkins in 'tmp' folder) ----> Labels: slave1 ----> Usage: "Only build jobs with label expressions matching this node" (It means, if i give slave1 i.e label name:, then only it will build the job) ----> Launch method: Launch agents with SSH, Host: Private IP of slave1 VM, Credentials: Click on Add ----> Select 'Jenkins' ----> Domain Name: Global credentials, Kind: SSH Username with private key, Username: ec2-user, Private key: "Check" enter directly ----> Add: Paste the content in pem file that is used to launch the slave node, Credentials: Select 'ec2-user'  ----> Host key verification strategy: non verifying verification strategy ----> Save. (Here we will give username and password for the server)
+
+You can see the OFFILINE for SLAVE 2
+
+What is the reason?
+
+Jenkins ----> Manage Jenkins ----> Nodes ----> slave2 ----> Log (leftpane) ----> You can see 'Launch Failed'. Above that, you can also see 'Java not found on hudson'.
+
+So, we have to install Java on slave2
+
+Connect to slave2 in moba ----> sudo amazon-linux-extras install java-openjdk11 -y
+
+Goto Jenkins Console ----> Dashboard ----> Nodes ----> slave2 ----> Status (Leftpane) ----> Click on 'Launch agent' ----> You can see "agent successfully connect and online." 
+
+Lets build the job on worker node 2 ----> Jenkins job ----> Configure ----> General ----> "Check" Restrict where this project can be run  ----> Label expression: slave2 ----> Apply ----> Save.
+Click on Build now.
+But you will see the build failure.
+This failure is becasue, we didnot install maven and git on slave2.
+
+Connect to slave2 ----> (You are currently pointing to 'tmp' folder) ----> yum install git java-1.8.0-openjdk maven -y
+
+Goto the Job ----> Click on Build Now ----> Click on build number ----> Console output ----> You can see "Building remotely on Slave2" and the path where the build got stored.
+
+Goto the slave2 connected tab in Moba ----> cd tmp ----> ls ----> You will see "workspace" directory ----> cd workspace ----> ls ----> You will see the job name ----> cd <job-name> ----> ls ----> cd target ----> You will see the "war" file.
+
+To see the load of master and slave nodes ----> Jenkins console ----> Dashboard ----> slave1 ----> Build History ----> You will see the build history.
+
+---------------------------------------------
+Upstream and Downstream Jobs
+---------------------------------------------
+Job1 --- Success
+Trigger Job2 --- Success
+Trigger Job3 --- Success
+
+Sequential execution of jobs in an automated way
+
+Job1 ----> Job2 ----> Job3
+
+Job1 ---> Post build action: job2
+
+Job2 ---> Post build action: job3
+
+
+
+
+
+-----------------------------------------------------
+RBAC (User Management in Jenkins)
+-----------------------------------------------------
+=> Roll Based Account Control
+
+DevOps Team ---> 9 People (Team Members) + 1 (Team Lead)
+
+1 person has joined ----> EC2 Permission ----> STOP --- App
+
+9 people ---> No Admin permissions 
+
+Jenkins ---> 9 - User Permissions (Limited permissions) (Create a job)
+
+Jenkins Admin ---> All kinds of permissions (Create, Build, Configure.....)
+
+=> RBAC is nothing but giving the required permissions for the team members to perform the tasks on Jenkins
+
+Create Jenkins users ----> Assign the required permissions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=> Roll Based Account Control
+
+=> By default, the user for jenkins is 'Admin User'
+=> To verify the users of jenkins ----> cd /var/lib/jenkins ----> cd users ---> ls ---> You will see a file "users.xml"----> You can see the users
+
+=> In order to restrict the permissions to all the team members working for the same project, we have to create jenkins users with limited/rerquired permissions.
+
+=> This can be made by creating users in the jenkins.
+
+=> Jenkins users have to be created, because the jenkins admin cannot share the id and password for security reasons.
+
+Creation of users in jenkins
+---------------------------------
+Jenkins console ---> Manage jenkins ---> Scroll down to see 'Users' under 'Security' option; and click on it ---> Click on 'Create User' ---> Username: kiran, Password: password, Provide the other details also ---> Click on 'Create User'
+
+By default, whenever we create the user in Jenkins, the user will have the admin permissions
+
+Reference:
+Jenkins Admin: kastro ---> All permissions
+Jenkins User: kiran ---> All permissions will come by default
+
+How to set permissions for jenkins users?
+-----------------------------------------------------
+Jenkins console ----> Manage jenkins ----> Security ----> Security Realm: jenkins own user database ----> 'uncheck' allow users to signup ----> Autherization: Select 'Project based Matrix Autherization Strategy' (or) 'Matrix based Security' ----> Add user ----> username: enter the user you have created ----> ok ----> Give the permissions accordingly in the matrix
+
+Logout from admin account.
+
+Login using user credentials and see the changes.
+
+-------------------------------------
+GITHUB WEBHOOKS
+-------------------------------------
+=> POLL SCM ----> * * * * * * (Every minute the build will get executed)
+
+=> The advanced option of poll-scm is webhooks
+
+=> Webhooks are used to build the job, only when there is a change committed in the repo
+
+Throttle Builds
+-------------------------------
+In an hour, i dont want to build more than 2 times
+
+=> To limit the number of builds in a minute/hour/day
+
+job----> 10 times
+
+job ----> in an hour, i want to build 2 times
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
